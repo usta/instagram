@@ -1,7 +1,7 @@
 # instagram
 instagram bot to learn
 
-[![Licence](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Licence](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/hakancelik96/instagram/blob/master/LICENSE.txt)
 
 before
 ---
