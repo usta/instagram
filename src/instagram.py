@@ -1,10 +1,9 @@
+import time
+import sys
 import random
 import json
 import requests
-from bs4 import BeautifulSoup
-import fake
-import time
-import sys
+from lib import fake
 
 class Instagram():
     def __init__(self, username, password, proxy = False):
@@ -13,9 +12,8 @@ class Instagram():
         self.isloggedin = False
         self.useragent = self.random_ua()["User-Agent"]
         self.s = requests.Session()
-        self.proxy = self.random_proxy() if proxy else {}
-        self.s.proxies = self.proxy
-        self.s_get = self.s.get("https://www.instagram.com/accounts/login/")
+        self.s.proxies = self.random_proxy() if proxy else {}
+        self.s_get = self.s.get("https://www.instagram.com/")
 
     def json_loads(self, req):
         r = {}
@@ -23,37 +21,41 @@ class Instagram():
             r = json.loads(req.text)
         except Exception as e:
             print("An Error Occured! Details :\n",sys.exc_info())
+        try:
+            if r["authenticated"] == True:
+                self.isloggedin = True
+        except:
+            pass
         finally:
-            self.s_get = self.s.get("https://www.instagram.com/")
-            return r
+             self.s_get = self.s.get("https://www.instagram.com/")
+             return r
 
     def login(self):
-        self.s_get = self.s.get("https://www.instagram.com/accounts/login/")
         post_url = "https://www.instagram.com/accounts/login/ajax/"
         form_data={"username": self.username, "password": self.password}
         self.s.headers.update({
             'UserAgent': self.useragent,
-			'x-instagram-ajax': '1',
-			'X-Requested-With': 'XMLHttpRequest',
-			'origin': 'https://www.instagram.com',
-			'ContentType': 'application/x-www-form-urlencoded',
-			'Connection': 'keep-alive',
-			'Accept': '*/*',
-			'Referer': 'https://www.instagram.com/accounts/login/',
-			'authority': 'www.instagram.com',
-			'Host' : 'www.instagram.com',
-			'Accept-Language': 'en-US;q=0.6,en;q=0.4',
-			'Accept-Encoding': 'gzip, deflate'
-		})
+            'x-instagram-ajax': '1',
+            'X-Requested-With': 'XMLHttpRequest',
+            'origin': 'https://www.instagram.com',
+            'ContentType': 'application/x-www-form-urlencoded',
+            'Connection': 'keep-alive',
+            'Accept': '*/*',
+            'Referer': 'https://www.instagram.com/accounts/login/',
+            'authority': 'www.instagram.com',
+            'Host' : 'www.instagram.com',
+            'Accept-Language': 'en-US;q=0.6,en;q=0.4',
+            'Accept-Encoding': 'gzip, deflate'
+            })
         self.s.headers.update({'X-CSRFToken': self.s_get.cookies.get_dict()['csrftoken']})
         r = self.s.post(post_url, data=form_data)
-        self.isloggedin = True
         return self.json_loads(r)
 
     def logout(self):
         post_url = "https://www.instagram.com/accounts/logout/"
         r = self.s.get(post_url)
         self.isloggedin = False
+        return r
 
     def follow(self, follow_id):
         if self.isloggedin:

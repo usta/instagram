@@ -22,7 +22,7 @@ password
 # gives random useragent
 >>> I.s
 # gives requests session
->>> I.proxy
+>>> I.s.proxies
 # you gives fake proxy ex: 165.321.51.21:8050
 >>> I.login() # to login instagram
 {'authenticated': True, 'user': True, 'status': 'ok'}
