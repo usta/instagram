@@ -19,13 +19,11 @@ class Instagram():
         r = {}
         try:
             r = json.loads(req.text)
+            if type(r) == type({}):
+                if "authenticated" in r and r["authenticated"] == True:
+                    self.isloggedin = True
         except Exception as e:
             print("An Error Occured! Details :\n",sys.exc_info())
-        try:
-            if r["authenticated"] == True:
-                self.isloggedin = True
-        except:
-            pass
         finally:
              self.s_get = self.s.get("https://www.instagram.com/")
              return r
