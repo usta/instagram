@@ -18,9 +18,11 @@ class Instagram():
     def json_loads(self, req):
         r = {}
         try:
-            r = json.loads(req.text)
             if type(r) == type({}):
-                if r["authenticated"] == True:
+                r = json.loads(req.text)
+                if "authenticated" in r and r["authenticated"] == True:
+                    # we have to check authenticated as a key in dict or not before
+                    # reaching it
                     self.isloggedin = True
         except Exception as e:
             print("An Error Occured! Details :\n",sys.exc_info())
